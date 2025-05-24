@@ -1,4 +1,4 @@
-name: Build and unit test the app
+name: Build Test and Deploy the app
 
 on:
   push:
@@ -25,3 +25,24 @@ jobs:
       run: npm run test:unit
     - name: Display Softuni username
       run: echo 'fightera'
+
+  execute-ui-tests:
+    needs: build-and-unit-tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clone github repo on the machine
+      uses: actions/checkout@v4
+    - name: Use Node.js 20
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+    - name: Install project dependencies
+      run: npm i
+    - name: Install Playwright Browsers
+      run: npx playwright install
+    - name: Start the app
+      run: npm start &
+    - name: Run ui tests
+      run: npm run test:ui     
